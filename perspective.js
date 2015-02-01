@@ -1,4 +1,10 @@
 
+function presentError(message)
+{
+    var errorDiv = document.getElementById('errors');
+    errorDiv.innerHTML = message;
+}
+
 function getWebGLContext()
 {
     var canvas = document.getElementById('mycanvas');
@@ -12,12 +18,12 @@ function getWebGLContext()
         }
         catch(e)
         {
-            alert( "getting gl context threw exception" );
+            presentError( "getting gl context threw exception" );
         }
     }
     else
     {
-        alert( "can't get context" );
+        presentError( "can't get context" );
     }
 
     gl = WebGLDebugUtils.makeDebugContext(gl);
@@ -84,7 +90,7 @@ function makeShader(gl, type, code)
     var log = gl.getShaderInfoLog(shader);
     if( log )
     {
-        alert('Shader compile failed with error log:\n' + log);
+        presentError('Shader compile failed with error log:\n' + log);
     }
     return shader;
 }
@@ -110,7 +116,7 @@ function makeEffect(gl, vertexCode, fragmentCode, attributes)
     var log = gl.getProgramInfoLog(program);
     if( log )
     {
-        alert('Link failed with error log:\n' + log);
+        presentError('Link failed with error log:\n' + log);
     }
 
     return {program: program, attributes: attributes};
