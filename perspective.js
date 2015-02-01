@@ -1,16 +1,22 @@
 
-function getWebGLContext() {
+function getWebGLContext()
+{
     var canvas = document.getElementById('mycanvas');
     var gl;
-    if (canvas.getContext) {
-        try {
+    if (canvas.getContext)
+    {
+        try
+        {
             gl = canvas.getContext("webgl") ||
                 canvas.getContext("experimental-webgl");
         }
-        catch(e) {
+        catch(e)
+        {
             alert( "getting gl context threw exception" );
         }
-    } else {
+    }
+    else
+    {
         alert( "can't get context" );
     }
 
@@ -19,17 +25,22 @@ function getWebGLContext() {
     return gl;
 }
 
-function clear(gl) {
+function clear(gl)
+{
     gl.clearColor(0,0,0,1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
-function makeGeometry(gl) {
+function makeGeometry(gl)
+{
     var vertices = [];
 
-    for (var x = -1; x < 2; x+=2) {
-        for (var y = -1; y < 2; y+=2) {
-            for (var z = -1; z < 2; z+=2) {
+    for (var x = -1; x < 2; x+=2)
+    {
+        for (var y = -1; y < 2; y+=2)
+        {
+            for (var z = -1; z < 2; z+=2)
+            {
                 vertices.push(x, y, z);
             }
         }
@@ -62,7 +73,8 @@ function makeGeometry(gl) {
     };
 }
 
-function makeShader(gl, type, code) {
+function makeShader(gl, type, code)
+{
     var shader = gl.createShader(type);
     gl.shaderSource(
         shader,
@@ -70,13 +82,15 @@ function makeShader(gl, type, code) {
         code);
     gl.compileShader(shader);
     var log = gl.getShaderInfoLog(shader);
-    if( log ) {
+    if( log )
+    {
         alert('Shader compile failed with error log:\n' + log);
     }
     return shader;
 }
 
-function makeEffect(gl, vertexCode, fragmentCode, attributes) {
+function makeEffect(gl, vertexCode, fragmentCode, attributes)
+{
     var program = gl.createProgram();
 
     var vertexShader = makeShader(gl, gl.VERTEX_SHADER, vertexCode);
@@ -85,7 +99,8 @@ function makeEffect(gl, vertexCode, fragmentCode, attributes) {
     var fragmentShader = makeShader(gl, gl.FRAGMENT_SHADER, fragmentCode);
     gl.attachShader(program, fragmentShader);
 
-    for (var name in attributes) {
+    for (var name in attributes)
+    {
         var index = attributes[name];
         gl.bindAttribLocation(program, index, name);
     }
@@ -93,20 +108,23 @@ function makeEffect(gl, vertexCode, fragmentCode, attributes) {
     gl.linkProgram(program);
 
     var log = gl.getProgramInfoLog(program);
-    if( log ) {
+    if( log )
+    {
         alert('Link failed with error log:\n' + log);
     }
 
     return {program: program, attributes: attributes};
 }
 
-function draw(gl, effect, geometry) {
+function draw(gl, effect, geometry)
+{
     gl.useProgram(effect.program);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, geometry.buffer);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.indexBuffer);
 
-    for (var name in effect.attributes) {
+    for (var name in effect.attributes)
+    {
         gl.enableVertexAttribArray(effect.attributes[name]);
     }
 
@@ -123,20 +141,28 @@ function draw(gl, effect, geometry) {
 
     gl.drawElements(gl.TRIANGLES, 3 * geometry.numTriangles, gl.UNSIGNED_SHORT, 0);
 
-    for (var name in effect.attributes) {
+    for (var name in effect.attributes)
+    {
         gl.disableVertexAttribArray(effect.attributes[name]);
     }
 }
 
-function main() {
+function main()
+{
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.getSession().setMode("ace/mode/json");
+
     var gl = getWebGLContext();
 
     gl.enable(gl.DEPTH_TEST);
 
     var geometry = makeGeometry(gl);
 
-    var vertexShaderCode = document.getElementById('vertexshader').value;
-    var fragmentShaderCode = document.getElementById('fragmentshader').value;
+    var modelObject = JSON.parse(editor.getSession().getValue());
+
+    var vertexShaderCode = modelObject["vertexCode"];
+    var fragmentShaderCode = modelObject["fragmentCode"];
 
     var attributes = {'position' : 0};
     var effect = makeEffect(gl, vertexShaderCode, fragmentShaderCode, attributes);

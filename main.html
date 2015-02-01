@@ -25,52 +25,24 @@
 </head>
 
 <body onload="main();">
-<canvas id="mycanvas" style="height:100%; width:50%">
+<canvas id="mycanvas" style="height:100%; width:40%">
   canvas text
 </canvas><br/>
-
-<textarea id="vertexshader">
-  attribute vec4 position;
-
-  varying vec3 v_position;
-
-  uniform mat4 projection;
-  uniform mat4 modelView;
-
-  void main() {
-      v_position = position.xyz / position.w;
-    gl_Position = projection * modelView * position;
-  }
-</textarea>
-
-<textarea id="fragmentshader">
-  varying vec3 v_position;
-
-  void main() {
-    gl_FragColor = vec4(v_position, 1.0);
-  }
-</textarea>
-
 
 <div>
 <pre id="editor">
 {
     "name" : "Henry",
-    "numbers" : [17,18,19,20]
+    "numbers" : [17,18,19,20],
+
+    "vertexCode" : "  attribute vec4 position;\n  varying vec3 v_position;\n  uniform mat4 projection;\n  uniform mat4 modelView;\n  void main() {\n      v_position = position.xyz / position.w;\n    gl_Position = projection * modelView * position;\n  }",
+
+    "fragmentCode" : "varying vec3 v_position;\n  void main() {\n    gl_FragColor = vec4(v_position, 1.0);\n  }"
 }
 </pre>
 </div>
 
-<div id="modelview">
-INSeRT MODEL HERE.
-</div>
-
 <script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/twilight");
-    editor.getSession().setMode("ace/mode/json");
-</script>
 
 </body>
 </html>
