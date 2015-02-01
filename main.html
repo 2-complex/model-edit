@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="webgl-debug.js"></script>
+<script src="matrix4.js"></script>
+<script src="perspective.js"></script>
+
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Model Editor</title>
@@ -19,7 +23,34 @@
     }
   </style>
 </head>
-<body>
+
+<body onload="main();">
+<canvas id="mycanvas" style="height:100%; width:50%">
+  canvas text
+</canvas><br/>
+
+<textarea id="vertexshader">
+  attribute vec4 position;
+
+  varying vec3 v_position;
+
+  uniform mat4 projection;
+  uniform mat4 modelView;
+
+  void main() {
+      v_position = position.xyz / position.w;
+    gl_Position = projection * modelView * position;
+  }
+</textarea>
+
+<textarea id="fragmentshader">
+  varying vec3 v_position;
+
+  void main() {
+    gl_FragColor = vec4(v_position, 1.0);
+  }
+</textarea>
+
 
 <div>
 <pre id="editor">
