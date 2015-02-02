@@ -1,13 +1,36 @@
-
 function presentError(message)
 {
     var errorDiv = document.getElementById('errorview');
     errorDiv.innerHTML = message;
 }
 
+var gCanvas;
+var gl;
+var effect;
+var geometry;
+
+function resizeCanvas()
+{
+    var canvas = gCanvas;
+    var width = canvas.clientWidth;
+    var height = canvas.clientHeight;
+
+    if (canvas.width != width || canvas.height != height)
+    {
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    clear(gl);
+    draw(gl, effect, geometry);
+}
+
 function getWebGLContext()
 {
     var canvas = document.getElementById('modelview');
+    gCanvas = canvas;
+
     var gl;
     if (canvas.getContext)
     {
@@ -159,11 +182,11 @@ function main()
     editor.setTheme("ace/theme/twilight");
     editor.getSession().setMode("ace/mode/json");
 
-    var gl = getWebGLContext();
+    gl = getWebGLContext();
 
     gl.enable(gl.DEPTH_TEST);
 
-    var geometry = makeGeometry(gl);
+    geometry = makeGeometry(gl);
 
     var modelObject = JSON.parse(editor.getSession().getValue());
 
@@ -171,8 +194,11 @@ function main()
     var fragmentShaderCode = modelObject["fragmentCode"];
 
     var attributes = {'position' : 0};
-    var effect = makeEffect(gl, vertexShaderCode, fragmentShaderCode, attributes);
+    effect = makeEffect(gl, vertexShaderCode, fragmentShaderCode, attributes);
 
-    clear(gl);
+    window.addEventListener('resize', resizeCanvas);
+
+    resizeCanvas();
+
     draw(gl, effect, geometry);
 }
