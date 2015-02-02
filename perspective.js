@@ -23,7 +23,7 @@ function resizeCanvas()
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     clear(gl);
-    draw(gl, effect, geometry);
+    draw(gl, effect, geometry, canvas.width / canvas.height);
 }
 
 function getWebGLContext()
@@ -145,7 +145,7 @@ function makeEffect(gl, vertexCode, fragmentCode, attributes)
     return {program: program, attributes: attributes};
 }
 
-function draw(gl, effect, geometry)
+function draw(gl, effect, geometry, aspectRatio)
 {
     gl.useProgram(effect.program);
 
@@ -159,7 +159,7 @@ function draw(gl, effect, geometry)
 
     var projection = gl.getUniformLocation(effect.program, 'projection');
     gl.uniformMatrix4fv(projection, false,
-        perspective(Math.PI / 5, 4/3, 0.1, 100.0) );
+        perspective(Math.PI / 5, aspectRatio, 0.1, 100.0) );
 
     var modelView = gl.getUniformLocation(effect.program, 'modelView');
     gl.uniformMatrix4fv(modelView, false, lookAt([5,4,3], [0,0,0], [0,1,0]) );
@@ -199,6 +199,4 @@ function main()
     window.addEventListener('resize', resizeCanvas);
 
     resizeCanvas();
-
-    draw(gl, effect, geometry);
 }
