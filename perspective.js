@@ -1,13 +1,13 @@
 
 function presentError(message)
 {
-    var errorDiv = document.getElementById('errors');
+    var errorDiv = document.getElementById('errorview');
     errorDiv.innerHTML = message;
 }
 
 function getWebGLContext()
 {
-    var canvas = document.getElementById('mycanvas');
+    var canvas = document.getElementById('modelview');
     var gl;
     if (canvas.getContext)
     {

@@ -14,18 +14,35 @@
     }
 
     #editor {
-        margin: 0;
         position: absolute;
         top: 0;
         bottom: 0;
         left: 50%;
         right: 0;
     }
+
+    #modelview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height:80%;
+        width:50%
+    }
+
+    #errorview {
+        position: absolute;
+        left: 0;
+        top: 80%;
+        height:20%;
+        width:50%
+    }
+
   </style>
 </head>
 
 <body onload="main();">
-<canvas id="mycanvas" style="height:100%; width:40%">
+
+<canvas id="modelview">
   canvas text
 </canvas><br/>
 
@@ -42,7 +59,7 @@
 </pre>
 </div>
 
-<div id="errors">
+<div id="errorview">
 </div>
 
 <script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
