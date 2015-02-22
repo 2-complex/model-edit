@@ -1,3 +1,6 @@
 [submodule "ace-builds"]
 	path = ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git
+[submodule "g2c"]
+	path = g2c
+	url = https://github.com/2-complex/g2c
