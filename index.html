@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ModelEdit</title>
+        <script type='text/javascript' src='http://code.jquery.com/jquery-2.0.2.min.js'></script>
+        <script type='text/javascript' src='editor.js'></script>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Model Editor</title>
+        <style type="text/css" media="screen">
+            body { overflow: hidden; background: #112}
+            #editor { position: absolute; top: 0; bottom: 0; left: 50%; width: 50%; height: 100%; }
+            #modelview { position: absolute; left: 0; top: 0; width:50%; height:80%; }
+            #errorview { position: absolute; left: 0; top: 80%; width:50%; height:20%; }
+        </style>
+</head>
+
+<body onload="initEditor();">
+
+<canvas id="modelview">
+  canvas default text
+</canvas><br/>
+
+<script type="text/javascript">
+    var canvas = document.getElementById("modelview");
+    var Module = {};
+    Module.canvas = canvas;
+</script>
+
+<script type="text/javascript" src="g2c/trampolines/emscripten/main.js"></script>
+<script type="text/javascript" src="g2c/trampolines/emscripten/trampoline.js"></script>
+
+<script type="text/javascript">
+    var program = new Program(canvas);
+</script>
+
+<div style="height:100%; width:40%">
+<pre id="editor">
+{
+    "name" : "Henry",
+    "numbers" : [17,18,19,20],
+
+    "vertexCode" : "  attribute vec4 position;\n  varying vec3 v_position;\n  uniform mat4 projection;\n  uniform mat4 modelView;\n  void main() {\n      v_position = position.xyz / position.w;\n    gl_Position = projection * modelView * position;\n  }",
+
+    "fragmentCode" : "varying vec3 v_position;\n  void main() {\n    gl_FragColor = vec4(v_position, 1.0);\n  }"
+}
+</pre>
+</div>
+
+<div id="errorview">
+</div>
+
+<script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+</body>
+</html>
