@@ -8,9 +8,8 @@ import SocketServer
 PORT = 8000
 
 ROUTES = (
-    ['/assets', 'g2c/examples/assets'],
     ['', '.']
-) 
+)
 
 class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def translate_path(self, path):
@@ -18,14 +17,14 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         # set default root to cwd
         root = os.getcwd()
-        
+
         # look up routes and set root directory accordingly
         for pattern, rootdir in ROUTES:
             if path.startswith(pattern):
                 path = path[len(pattern):]  # consume path up to pattern len
                 root = rootdir
                 break
-        
+
         # normalize path and prepend root directory
         path = path.split('?',1)[0]
         path = path.split('#',1)[0]
@@ -41,11 +40,11 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             if word in (os.curdir, os.pardir):
                 continue
             path = os.path.join(path, word)
- 
+
         return path
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     Handler = MyRequestHandler
     httpd = SocketServer.TCPServer(("", PORT), Handler)
     print "Serving on port", PORT
