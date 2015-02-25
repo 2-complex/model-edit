@@ -8,6 +8,7 @@ import SocketServer
 PORT = 8000
 
 ROUTES = (
+    ['/assets', 'g2c/examples/assets'],
     ['', '.']
 )
 
