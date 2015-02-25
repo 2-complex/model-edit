@@ -75,7 +75,7 @@ function handleTextureLoaded(image, texture, mipmaps)
         gl.generateMipmap(gl.TEXTURE_2D);
     }
 
-    // _glBindTexture(gl.TEXTURE_2D, 0);
+    _glBindTexture(gl.TEXTURE_2D, 0);
 }
 
 Bank.initTextureWithPath = function(path, texture, mipmaps)
@@ -90,12 +90,16 @@ var Program = function Program(canvas)
     this.canvas = canvas;
     this.translation = { originX: 0, originY: 0, zoom: 1.0 };
 
+    this.resizeCanvas();
     Bindings.resize(canvas.width, canvas.height);
+
     Bindings.init();
 
     this.mouseController = new MouseController(canvas, this);
 
     this.invalidate();
+
+    window.addEventListener('resize', this.resizeCanvas.bind(this));
 }
 
 
@@ -113,6 +117,23 @@ Program.prototype.render = function()
     Bindings.draw();
 
     this.invalidate();
+}
+
+Program.prototype.resizeCanvas = function()
+{
+   // only change the size of the canvas if the size it's being displayed
+   // has changed.
+   var width = canvas.clientWidth;
+   var height = canvas.clientHeight;
+   if (canvas.width != width ||
+       canvas.height != height)
+   {
+     // Change the size of the canvas to match the size it's being displayed
+     canvas.width = width;
+     canvas.height = height;
+
+     Bindings.resize(canvas.width, canvas.height);
+   }
 }
 
 Program.prototype.invalidate = function()

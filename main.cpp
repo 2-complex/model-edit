@@ -12,26 +12,24 @@ using namespace std;
 using namespace g2c;
 
 
-void initSDL(int width, int height)
+void handleSDL(int width, int height)
 {
     static bool initializedAlready = false;
-    static SDL_Surface* screen = NULL;
 
     if( ! initializedAlready )
     {
-        if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) == 0 )
-        {
-            screen = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
-            if (screen == NULL)
-            {
-                printf("Could not set video mode: %s", SDL_GetError());
-            }
-        }
-        else
-        {
-            printf("Could not initialize SDL: %s", SDL_GetError());
-        }
         initializedAlready = true;
+        if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0 )
+        {
+            printf("SDL_Init error: %s", SDL_GetError());
+            return;
+        }
+    }
+
+    static SDL_Surface* screen = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
+    if (screen == NULL)
+    {
+        printf("Could not set video mode: %s", SDL_GetError());
     }
 }
 
@@ -63,10 +61,13 @@ extern "C" void init()
 
 extern "C" void resize(int width, int height)
 {
-    initSDL(width, height);
+    handleSDL(width, height);
 
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glViewport(0, 0, width, height);
+
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 
     ModelApp::get()->resize(width, height);
 }
