@@ -85,7 +85,6 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
     def translate_path(self, path):
-        print "translate_path"
         if path.split('/')[0] == "ls":
             return path
         else:
