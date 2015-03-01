@@ -19,7 +19,7 @@ void handleSDL(int width, int height)
     if( ! initializedAlready )
     {
         initializedAlready = true;
-        if( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0 )
+        if( SDL_Init(SDL_INIT_VIDEO) != 0 )
         {
             printf("SDL_Init error: %s", SDL_GetError());
             return;

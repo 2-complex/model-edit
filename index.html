@@ -54,7 +54,8 @@
         w2ui['layout'].content('preview', document.getElementById("errorview"));
 
         var canvas = document.getElementById("modelview");
-        Module.canvas = canvas;
+        Module['canvas'] = canvas;
+        Module['doNotCaptureKeyboard'] = true;
         initBindings();
         Program.instantiate(canvas);
         Editor.initEditor();
