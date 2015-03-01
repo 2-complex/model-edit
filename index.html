@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>ModelEdit</title>
@@ -8,54 +7,72 @@
     <script type="text/javascript" src="w2ui/libs/jquery/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="w2ui/src/w2utils.js"></script>
     <script type="text/javascript" src="w2ui/src/w2sidebar.js"></script>
-    <script type="text/javascript" src="editor.js"></script>
+    <script type="text/javascript" src="w2ui/src/w2layout.js"></script>
 
-    <script type="text/javascript" src = "sidebar.js"></script>
-</script>
+    <script type="text/javascript" src="editor.js"></script>
+    <script type="text/javascript" src="sidebar.js"></script>
+
+    <script>
+    $(function () {
+
+        var pstyle = 'background-color: #000000; overflow: hidden';
+        $('#layout').w2layout(
+        {
+            name: 'layout',
+            padding: 4,
+            panels: [
+              { type: 'left', size: '20%', style: pstyle, resizable: true },
+              { type: 'main', size: '40%', style: pstyle, resizable: true },
+              { type: 'right', size: '40%', style: pstyle, resizable: true },
+              { type: 'preview', size: '30%', style: pstyle, resizable: true }
+            ]
+        });
+    });
+    </script>
+
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Model Editor</title>
     <style type="text/css" media="screen">
         body { overflow: hidden; background: #112}
-        #sidebar   { position: absolute; left: 0;   top: 0;   width:20%; height:100%; }
-        #modelview { position: absolute; left: 20%; top: 0;   width:40%; height:80%; }
-        #errorview { position: absolute; left: 20%; top: 80%; width:40%; height:20%; }
-        #editor    { position: absolute; left: 60%; top: 0;   width: 40%; height: 100%; }
-
+        #sidebar   { left: 0; top: 0; width:100%; height:100%; }
+        #modelview { left: 0; top: 0; width:100%; height:100%; }
+        #errorview { left: 0; top: 0; width:100%; height:100%; }
+        #editor    { left: 0; top: 0; width:100%; height:100%; }
     </style>
+
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="trampoline.js"></script>
+
+    <script type="text/javascript">
+    function modelEditMain()
+    {
+        w2ui['layout'].content('left', document.getElementById("sidebar"));
+        w2ui['layout'].content('main', document.getElementById("modelview"));
+        w2ui['layout'].content('right', document.getElementById("editor"));
+        w2ui['layout'].content('preview', document.getElementById("errorview"));
+
+        var canvas = document.getElementById("modelview");
+        Module.canvas = canvas;
+        initBindings();
+        Program.instantiate(canvas);
+        Editor.initEditor();
+    }
+    </script>
+
+    <script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
 </head>
 
-<body onload="Editor.initEditor();">
+<body onload="modelEditMain();">
 
-<canvas id="modelview">
-  canvas default text
-</canvas><br/>
+<div id="layout" style="width: 100%; height: 100%;"></div>
 
-<script type="text/javascript">
-    var canvas = document.getElementById("modelview");
-    var Module = {};
-    Module.canvas = canvas;
-</script>
-
-<script type="text/javascript" src="main.js"></script>
-<script type="text/javascript" src="trampoline.js"></script>
-
-<script type="text/javascript">
-    var program = new Program(canvas);
-</script>
-
+<canvas id="modelview"> canvas default text </canvas>
 <div id="sidebar"></div>
-
-<div>
-<pre id="editor"></pre>
-</div>
-
-<div id="errorview">
-</div>
-
-<script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<div id="editor"></div>
+<div id="errorview"/></div>
 
 </body>
 </html>
