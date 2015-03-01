@@ -25,6 +25,7 @@ Editor.getTextFile = function(path)
     function myFunction(s)
     {
         Editor.aceEditor.getSession().setValue(s);
+        Bindings.setString(s);
     }
 }
 
@@ -35,6 +36,6 @@ Editor.initEditor = function()
     editor.getSession().setMode("ace/mode/json");
     Editor.aceEditor = editor;
 
-    Editor.getTextFile('workspace/box.model')
+    Editor.getTextFile('workspace/box.model');
 }
 

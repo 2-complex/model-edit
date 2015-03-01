@@ -21,11 +21,17 @@ function get_ls()
     }
 }
 
+function endsWith(str, suffix)
+{
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
 
 function install_sidebar(lsObject)
 {
-    $(function () {
-        $('#sidebar').w2sidebar({
+    $(function ()
+    {
+        $('#sidebar').w2sidebar(
+        {
             name : 'sidebar',
             img : null,
             topHTML : '<div style="padding: 10px 5px; border-bottom: 1px solid #aaa;"></div>',
@@ -37,16 +43,16 @@ function install_sidebar(lsObject)
                 { id: 2, text: 'View Item', icon: 'fa-camera' },
                 { id: 4, text: 'Delete Item', icon: 'fa-minus' }
             ],
-            onMenuClick: function (event)
+            onMenuClick: function( event )
             {
                 console.log(event);
             },
-            onFocus: function (event)
+            onFocus: function( event )
             {
                 console.log('focus: ', this.name, event);
                 // event.preventDefault();
             },
-            onBlur: function (event)
+            onBlur: function( event )
             {
                 console.log('blur: ', this.name, event);
                 // event.preventDefault();
@@ -54,8 +60,13 @@ function install_sidebar(lsObject)
             //onKeydown: function (event) { console.log('keyboard', event); event.preventDefault(); },
             nodes: lsObject.nodes,
 
-            onClick: function (event) {
+            onClick: function( event )
+            {
                 console.log('click', event.target, event);
+                if( endsWith(event.target, ".model") )
+                {
+                    Editor.getTextFile(event.target);
+                }
             }
         });
     });

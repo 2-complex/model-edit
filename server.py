@@ -18,13 +18,13 @@ ROUTES = (
 def get_ls(path):
     if os.path.isdir(path):
         return {
-            "id" : "fs-" + path,
+            "id" : path,
             "text" : path.split('/')[-1],
             "img" : "icon-folder",
             "nodes" : [get_ls(os.path.join(path,x)) for x in os.listdir(path)] }
     else:
         return {
-            "id": "fs-" + path,
+            "id": path,
             "text": path.split('/')[-1],
             "img": "icon-page" }
 

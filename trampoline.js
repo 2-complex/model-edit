@@ -106,13 +106,6 @@ var Program = function Program(canvas)
 var counter = 0;
 Program.prototype.render = function()
 {
-    counter += 1;
-
-    if( counter == 10 )
-    {
-        Bindings.setString( Editor.aceEditor.getSession().getValue() );
-    }
-
     Bindings.step((new Date).getTime() / 1000.0);
     Bindings.draw();
 
