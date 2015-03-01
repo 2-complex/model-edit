@@ -46,20 +46,21 @@ MouseController.prototype.onMouseLeave = function(theEvent)
 }
 
 
-
 var Bindings = function Bindings() {}
 
-Bindings.init = Module.cwrap("init", "", []);
-Bindings.resize = Module.cwrap("resize", "", ["number", "number"]);
-Bindings.step = Module.cwrap("step", "", ["number"]);
-Bindings.draw = Module.cwrap("draw", "", []);
+function initBindings()
+{
+    Bindings.init = Module.cwrap("init", "", []);
+    Bindings.resize = Module.cwrap("resize", "", ["number", "number"]);
+    Bindings.step = Module.cwrap("step", "", ["number"]);
+    Bindings.draw = Module.cwrap("draw", "", []);
 
-Bindings.mouseDown = Module.cwrap("mouseDown", "", ["number", "number"]);
-Bindings.mouseDragged = Module.cwrap("mouseDragged", "", ["number", "number"]);
-Bindings.mouseUp = Module.cwrap("mouseUp", "", ["number", "number"]);
+    Bindings.mouseDown = Module.cwrap("mouseDown", "", ["number", "number"]);
+    Bindings.mouseDragged = Module.cwrap("mouseDragged", "", ["number", "number"]);
+    Bindings.mouseUp = Module.cwrap("mouseUp", "", ["number", "number"]);
 
-Bindings.setString = Module.cwrap("setString", "", ["string"]);
-
+    Bindings.setString = Module.cwrap("setString", "", ["string"]);
+}
 
 var Bank = function Bank() {}
 
@@ -99,19 +100,22 @@ var Program = function Program(canvas)
 
     this.invalidate();
 
-    window.addEventListener('resize', this.resizeCanvas.bind(this));
+    this.canvas.addEventListener('resize', this.resizeCanvas.bind(this));
 }
 
+Program.instantiate = function(canvas)
+{
+    Program.instance = Program.instance || new Program(canvas);
+}
 
-var counter = 0;
+Program.get = function()
+{
+    return  Program.instance || null;
+}
+
 Program.prototype.render = function()
 {
-    counter += 1;
-
-    if( counter == 10 )
-    {
-        Bindings.setString( Editor.aceEditor.getSession().getValue() );
-    }
+    this.resizeCanvas();
 
     Bindings.step((new Date).getTime() / 1000.0);
     Bindings.draw();
@@ -123,16 +127,16 @@ Program.prototype.resizeCanvas = function()
 {
    // only change the size of the canvas if the size it's being displayed
    // has changed.
-   var width = canvas.clientWidth;
-   var height = canvas.clientHeight;
-   if (canvas.width != width ||
-       canvas.height != height)
+   var width = this.canvas.clientWidth;
+   var height = this.canvas.clientHeight;
+   if (this.canvas.width != width ||
+       this.canvas.height != height)
    {
-     // Change the size of the canvas to match the size it's being displayed
-     canvas.width = width;
-     canvas.height = height;
+        // Change the size of the canvas to match the size it's being displayed
+        this.canvas.width = width;
+        this.canvas.height = height;
 
-     Bindings.resize(canvas.width, canvas.height);
+        Bindings.resize(this.canvas.width, this.canvas.height);
    }
 }
 

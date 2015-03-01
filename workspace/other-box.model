@@ -1,0 +1,137 @@
+{
+  "type" : "Model",
+  "name" : "box",
+  "elements" : [
+    {
+      "type" : "Texture",
+      "name" : "spots",
+      "file" : "images/tiles.png",
+      "unit" : 0
+    },
+    {
+      "type" : "Assumption",
+      "name" : "woodMaterial",
+      "effect" : "phongWithTexture",
+      "color" : [1.0, 0.0, 1.1, 1 ],
+      "texture" : "spots"
+    },
+    {
+      "type" : "Assumption",
+      "name" : "cubeTransform"
+    },
+    {
+      "type" : "Assumption",
+      "name" : "context"
+    },
+    {
+      "type" : "Effect",
+      "name" : "phongWithTexture",
+      "vertexCode" : "
+        uniform mat4 modelView;
+        uniform mat4 projection;
+
+        attribute vec3 vertex;
+        attribute vec3 normal;
+        attribute vec2 texcoord;
+
+        varying vec3 v_position;
+        varying vec3 v_normal;
+        varying vec2 v_texCoord;
+
+        void main()
+        {
+          v_position = vertex;
+          v_normal = normal;
+          v_texCoord = texcoord;
+          gl_Position = projection * modelView * vec4(vertex, 1.0);
+        }
+        ",
+      "fragmentCode" : "
+        varying vec3 v_position;
+        varying vec3 v_normal;
+        varying vec2 v_texCoord;
+
+        uniform sampler2D texture;
+        uniform vec4 color;
+
+        void main()
+        {
+          float t = dot(v_normal, vec3(0.3,0.5,1.0));
+          if( t < 0.1 ) t = 0.1;
+          gl_FragColor = color * vec4(t * color.xyz * texture2D(texture, v_texCoord).xyz, 1.0);
+        }
+        "
+    },
+    {
+      "type" : "Shape",
+      "name" : "cubeShape",
+      "geometry" : "cube_mesh_geometry",
+      "assumptions" : [
+        "woodMaterial",
+        "cubeTransform",
+        "context"
+      ]
+    },
+    {
+      "type" : "Buffer",
+      "name" : "cube_mesh_vertices",
+      "array" : [
+        -2.0, -2.0, 2.0, 0, 0, 1, 0.2, 0.2,
+        2.0, -2.0, 2.0, 0, 0, 1, 0.5, 0.2,
+        2.0, 2.0, 2.0, 0, 0, 1, 0.5, 0.5,
+        -2.0, 2.0, 2.0, 0, 0, 1, 0.2, 0.5,
+
+        -2.0, 2.0, 2.0, 0, 1, 0, 0.5, 0.8,
+        2.0, 2.0, 2.0, 0, 1, 0, 0.8, 0.8,
+        2.0, 2.0, -2.0, 0, 1, 0, 0.8, 0.5,
+        -2.0, 2.0, -2.0, 0, 1, 0, 0.5, 0.5,
+
+        -2.0, 2.0, -2.0, 0, 0, -1, 0.2, 0.8,
+        2.0, 2.0, -2.0, 0, 0, -1, 0.5, 0.8,
+        2.0, -2.0, -2.0, 0, 0, -1, 0.5, 0.5,
+        -2.0, -2.0, -2.0, 0, 0, -1, 0.2, 0.5,
+
+        -2.0, -2.0, -2.0, 0, -1, 0, 0.2, 0.5,
+        2.0, -2.0, -2.0, 0, -1, 0, 0.5, 0.5,
+        2.0, -2.0, 2.0, 0, -1, 0, 0.5, 0.8,
+        -2.0, -2.0, 2.0, 0, -1, 0, 0.2, 0.8,
+
+        2.0, -2.0, 2.0, 1, 0, 0, 0.3, 0.8,
+        2.0, -2.0, -2.0, 1, 0, 0, 0.3, 0.5,
+        2.0, 2.0, -2.0, 1, 0, 0, 0.6, 0.5,
+        2.0, 2.0, 2.0, 1, 0, 0, 0.6, 0.8,
+
+        -2.0, -2.0, -2.0, -1, 0, 0, 0.3, 0.5,
+        -2.0, -2.0, 2.0, -1, 0, 0, 0.3, 0.8,
+        -2.0, 2.0, 2.0, -1, 0, 0, 0.6, 0.8,
+        -2.0, 2.0, -2.0, -1, 0, 0, 0.6, 0.5
+      ]
+    },
+    {
+      "type" : "IndexBuffer",
+      "name" : "cube_mesh_indices",
+      "array" : [
+        0, 1, 2,
+        0, 2, 3,
+        4, 5, 6,
+        4, 6, 7,
+        8, 9, 10,
+        8, 10, 11,
+        12, 13, 14,
+        12, 14, 15,
+        16, 17, 18,
+        16, 18, 19,
+        20, 21, 22,
+        20, 22, 23
+      ]
+    },
+    {
+      "type" : "Geometry",
+      "name" : "cube_mesh_geometry",
+      "indices" : "cube_mesh_indices",
+      "normal" : { "type" : "Field", "buffer" : "cube_mesh_vertices", "size" : 3, "stride" : 8, "offset" : 3 },
+      "texcoord" : { "type" : "Field", "buffer" : "cube_mesh_vertices", "size" : 2, "stride" : 8, "offset" : 6 },
+      "vertex" : { "type" : "Field", "buffer" : "cube_mesh_vertices", "size" : 3, "stride" : 8, "offset" : 0 }
+    }
+  ]
+}
