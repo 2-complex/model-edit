@@ -5,12 +5,28 @@ import urllib
 import SimpleHTTPServer
 import SocketServer
 
+import json
+
 PORT = 8000
 
 ROUTES = (
-    ['/assets', 'g2c/examples/assets'],
+    ['/assets', 'workspace/images'],
     ['', '.']
 )
+
+
+def get_ls(path):
+    if os.path.isdir(path):
+        return {
+            "id" : "fs-" + path,
+            "text" : path.split('/')[-1],
+            "img" : "icon-folder",
+            "nodes" : [get_ls(os.path.join(path,x)) for x in os.listdir(path)] }
+    else:
+        return {
+            "id": "fs-" + path,
+            "text": path.split('/')[-1],
+            "img": "icon-page" }
 
 
 lsstring = """
@@ -63,6 +79,8 @@ lsstring = """
 """
 
 
+
+
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
@@ -79,8 +97,7 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
-            content = [lsstring]
-            self.wfile.write("".join(content).encode("UTF-8"))
+            self.wfile.write(json.dumps({"nodes":get_ls('workspace')}).encode("UTF-8"))
         else:
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -117,12 +134,14 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             return path
 
 
-
-
-if __name__ == '__main__':
+def go():
     print "serving on port " + str(PORT)
     httpd = SocketServer.TCPServer(("", PORT), BossHandler)
     httpd.serve_forever()
+
+if __name__ == '__main__':
+    go()
+
 
 
 
