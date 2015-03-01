@@ -29,62 +29,14 @@ def get_ls(path):
             "img": "icon-page" }
 
 
-lsstring = """
-{\"nodes\":[
-    { \"id\": \"fromserver-2\", \"text\": \"assets\", \"img\": \"icon-folder\", \"expanded\": true, \"group\": true,
-      \"nodes\": [ { \"id\": \"fromserver-2-1\", \"text\": \"fromserver 2.1\", \"img\": \"icon-folder\",
-                 \"nodes\": [
-                   { \"id\": \"fromserver-2-1-1\", \"text\": \"fromserver 2.1.1\", \"img\": \"icon-page\", \"count\": \"4\", \"route\": \"/some/:id/:vid\"},
-                   { \"id\": \"fromserver-2-1-2\", \"text\": \"fromserver 2.1.2\", \"img\": \"icon-page\", \"count\": \"10\", \"route\": \"/some/:id/:vid/ok\" },
-                   { \"id\": \"fromserver-2-1-3\", \"text\": \"fromserver 2.1.3\", \"img\": \"icon-page\", \"count\": \"22\", \"route\": \"/some/:id/:vid,:id\" },
-                   { \"id\": \"fromserver-2-1-4\", \"text\": \"fromserver 2.1.4\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-5\", \"text\": \"fromserver 2.1.5\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-6\", \"text\": \"fromserver 2.1.6\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-7\", \"text\": \"fromserver 2.1.7\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-8\", \"text\": \"fromserver 2.1.7\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-9\", \"text\": \"fromserver 2.1.7\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-10\", \"text\": \"fromserver 2.1.10\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-11\", \"text\": \"fromserver 2.1.11\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-12\", \"text\": \"fromserver 2.1.12\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-13\", \"text\": \"fromserver 2.1.13\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-14\", \"text\": \"fromserver 2.1.14\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-2-1-15\", \"text\": \"fromserver 2.1.15\", \"img\": \"icon-page\" }
-             ]},
-               { \"id\": \"fromserver-3-1\", \"text\": \"fromserver 3.1\", \"img\": \"icon-folder\", \"expanded\": true,
-                 \"nodes\": [
-                   { \"id\": \"fromserver-3-1-1\", \"text\": \"fromserver 3.1.1\", \"icon\": \"fa-beer\", \"disabled\": true },
-                   { \"id\": \"fromserver-3-1-2\", \"text\": \"fromserver 3.1.2\", \"icon\": \"fa-envelope\" },
-                   { \"id\": \"fromserver-3-1-3\", \"text\": \"fromserver 3.1.3\", \"icon\": \"fa-ok\" },
-                   { \"id\": \"fromserver-3-1-4\", \"text\": \"fromserver 3.1.4\", \"icon\": \"fa-heart\" },
-                   { \"id\": \"fromserver-3-1-5\", \"text\": \"fromserver 3.1.5\", \"icon\": \"fa-globe\", \"disabled\": true },
-                   { \"id\": \"fromserver-3-1-6\", \"text\": \"fromserver 3.1.6\", \"icon\": \"fa-reorder\" },
-                   { \"id\": \"fromserver-3-1-7\", \"text\": \"fromserver 3.1.7\", \"icon\": \"fa-user-md\" },
-                   { \"id\": \"fromserver-3-1-8\", \"text\": \"fromserver 3.1.8\", \"icon\": \"fa-download\" }
-             ]},
-               { \"id\": \"fromserver-4-1\", \"text\": \"fromserver 4.1\", \"img\": \"icon-folder\",
-                 \"nodes\": [
-                   { \"id\": \"fromserver-4-1-1\", \"text\": \"fromserver 4.1.1\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-4-1-2\", \"text\": \"fromserver 4.1.2\", \"img\": \"icon-page\" },
-                   { \"id\": \"fromserver-4-1-3\", \"text\": \"fromserver 4.1.3\", \"img\": \"icon-page\" }
-             ]}
-             ]
-    },
-    { \"id\": \"fromserver-5\", \"text\": \"fromserver 5\", \"img\": \"icon-folder\", \"expanded\": true, \"group\": true,
-      \"nodes\": [ { \"id\": \"fromserver-5-1\", \"text\": \"fromserver 5.1\", \"img\": \"icon-page\" },
-               { \"id\": \"fromserver-5-2\", \"text\": \"fromserver 5.2\", \"img\": \"icon-page\" },
-               { \"id\": \"fromserver-5-3\", \"text\": \"fromserver 5.3\", \"img\": \"icon-page\" }
-             ]
-    }
-]}
-"""
-
-
-
-
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
-        if self.path.startswith("/ls"):
+        if self.path.endswith(".model"):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+        elif self.path.startswith("/ls"):
             self.send_response(200)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
@@ -93,7 +45,14 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
     def do_GET(self):
-        if self.path.startswith("/ls"):
+        if self.path.endswith(".model"):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            f = open('.'+self.path, 'r')
+            self.wfile.write(f.read().encode("UTF-8"))
+            f.close()
+        elif self.path.startswith("/ls"):
             self.send_response(200)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
