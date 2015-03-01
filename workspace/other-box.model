@@ -1,4 +1,3 @@
-
 {
   "type" : "Model",
   "name" : "box",
@@ -6,14 +5,14 @@
     {
       "type" : "Texture",
       "name" : "spots",
-      "file" : "assets/spots.png",
+      "file" : "images/tiles.png",
       "unit" : 0
     },
     {
       "type" : "Assumption",
       "name" : "woodMaterial",
       "effect" : "phongWithTexture",
-      "color" : [1.0, 1.0, 1.1, 1 ],
+      "color" : [1.0, 0.0, 1.1, 1 ],
       "texture" : "spots"
     },
     {

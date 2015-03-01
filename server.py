@@ -10,7 +10,7 @@ import json
 PORT = 8000
 
 ROUTES = (
-    ['/assets', 'workspace/images'],
+    ['/images', 'workspace/images'],
     ['', '.']
 )
 
