@@ -7,6 +7,11 @@ import SocketServer
 
 import json
 
+import re
+import urlparse
+import base64
+
+
 PORT = 8000
 
 ROUTES = (
@@ -29,6 +34,7 @@ def get_ls(path):
             "img": "icon-page" }
 
 
+
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
@@ -42,7 +48,6 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.end_headers()
         else:
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_HEAD(self)
-
 
     def do_GET(self):
         if self.path.endswith(".model"):
@@ -59,6 +64,18 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps({"nodes":get_ls('workspace')}).encode("UTF-8"))
         else:
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+
+
+    def do_POST(self):
+        length = int(self.headers.getheader('content-length'))
+        data = base64.b64decode(re.findall("base64,(.*)",
+                urlparse.parse_qs(self.rfile.read(length))['data'][0])[0])
+
+        f = open('workspace/someimage.jpg', 'w')
+        f.write(data)
+        f.close()
+        self.send_response(200)
+
 
     def translate_path(self, path):
         if path.split('/')[0] == "ls":
