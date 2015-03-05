@@ -26,12 +26,14 @@ def get_ls(path):
             "id" : path,
             "text" : path.split('/')[-1],
             "img" : "icon-folder",
-            "nodes" : [get_ls(os.path.join(path,x)) for x in os.listdir(path)] }
+            "nodes" : [get_ls(os.path.join(path,x)) for x in os.listdir(path)],
+            "type": "directory" }
     else:
         return {
             "id": path,
             "text": path.split('/')[-1],
-            "img": "icon-page" }
+            "img": "icon-page",
+            "type": "file" }
 
 
 
@@ -75,7 +77,7 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         filename = qmap['filename'][0]
         target_path = qmap['target_path'][0]
 
-        if os.isdir(target_path):
+        if os.path.isdir(target_path):
             f = open(os.path.join(target_path, filename), 'w')
             f.write(data)
             f.close()

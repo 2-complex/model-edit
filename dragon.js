@@ -1,6 +1,6 @@
 
 
-function uploadImage(file, target_path)
+function addFile(file, target_path)
 {
     var reader = new FileReader();
 
@@ -13,10 +13,14 @@ function uploadImage(file, target_path)
         var filename = file.name;
         var data = event.target.result;
 
+        w2ui['sidebar'].add(target_path, [{
+            id: 'node_' + target_path + '/' + filename,
+            text: filename,
+            img: "icon-page"
+        }]);
+
         img.onload = function()
         {
-            document.getElementById("errorview").appendChild(img);
-
             $.ajax({
                 type: "POST",
                 url: "upload-image",
@@ -29,14 +33,58 @@ function uploadImage(file, target_path)
     };
 }
 
+if(typeof(String.prototype.trim) === "undefined")
+{
+    String.prototype.trim = function()
+    {
+        return String(this).replace(/^\s+|\s+$/g, '');
+    };
+}
+
+if(typeof(String.prototype.contains) === "undefined")
+{
+    String.prototype.contains = function(s)
+    {
+        return String(this).indexOf(s) > -1;
+    };
+}
+
 function initDragon()
 {
-    // When the draggable p element enters the droptarget, change the DIVS's border style
+
+    function getDraggableSidebarInfo(e)
+    {
+        if( e.target.className.contains("w2ui-node") )
+        {
+            var path = event.target.id.slice(5);
+            var nodes = w2ui['sidebar'].find({id:path});
+            if( nodes.length > 0 )
+            {
+                var node = nodes[0];
+                if( node.type == "directory" )
+                {
+                    return { path: node.id, highlight: e.target };
+                }
+                else
+                {
+                    return { path: node.parent.id, highlight: e.target.parentElement };
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // When the draggable element enters the droptarget, change the DIVS's border style
     document.addEventListener("dragenter", function(event)
     {
-        if ( event.target.className == "w2ui-node  " )
+        if ( event.target.className.contains("w2ui-node") )
         {
-            event.target.style.border = "3px dotted green";
+            var info = getDraggableSidebarInfo(event);
+            if( info )
+            {
+                info.highlight.style.border = "3px dotted green";
+            }
         }
     });
 
@@ -46,18 +94,20 @@ function initDragon()
     {
         event.preventDefault();
 
-        if ( event.target.className == "w2ui-node  " )
+        var info = getDraggableSidebarInfo(event);
+        if( info )
         {
-            event.target.style.border = "3px dotted green";
+            info.highlight.style.border = "3px dotted green";
         }
     });
 
     // When the draggable p element leaves the droptarget, reset the DIVS's border style
     document.addEventListener("dragleave", function(event)
     {
-        if ( event.target.className == "w2ui-node  " )
+        var info = getDraggableSidebarInfo(event);
+        if( info )
         {
-            event.target.style.border = "0px";
+            info.highlight.style.border = "0px";
         }
     });
 
@@ -65,12 +115,13 @@ function initDragon()
     {
         e.preventDefault(); // (Which is to open it)
 
-        if ( event.target.className == "w2ui-node  " )
+        var info = getDraggableSidebarInfo(event);
+        if( info )
         {
-            event.target.style.border = "0px";
+            info.highlight.style.border = "0px";
         }
 
-        uploadImage(e.dataTransfer.files[0], event.target.id.slice(5));
+        addFile(e.dataTransfer.files[0], info.path);
     });
 
 }
