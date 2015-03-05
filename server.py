@@ -68,12 +68,18 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         length = int(self.headers.getheader('content-length'))
+        qmap = urlparse.parse_qs(self.rfile.read(length))
         data = base64.b64decode(re.findall("base64,(.*)",
-                urlparse.parse_qs(self.rfile.read(length))['data'][0])[0])
+                qmap['data'][0])[0])
 
-        f = open('workspace/someimage.jpg', 'w')
-        f.write(data)
-        f.close()
+        filename = qmap['filename'][0]
+        target_path = qmap['target_path'][0]
+
+        if os.isdir(target_path):
+            f = open(os.path.join(target_path, filename), 'w')
+            f.write(data)
+            f.close()
+
         self.send_response(200)
 
 
