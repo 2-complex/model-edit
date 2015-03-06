@@ -42,18 +42,6 @@ def get_ls(path):
 
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
-    def do_HEAD(self):
-        if self.path.endswith(".model"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-        elif self.path.startswith("/ls"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-        else:
-            return SimpleHTTPServer.SimpleHTTPRequestHandler.do_HEAD(self)
-
     def do_GET(self):
         if self.path.endswith(".model"):
             self.send_response(200)
@@ -67,6 +55,15 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/plain")
             self.end_headers()
             self.wfile.write(json.dumps({"nodes":get_ls('workspace')}).encode("UTF-8"))
+        elif self.path.startswith("/rm"):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            path = self.path[3:]
+            print path
+            command = 'rm workspace' + path
+            print command
+            os.system(command)
         else:
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 

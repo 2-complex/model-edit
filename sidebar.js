@@ -9,16 +9,28 @@ function get_ls()
     {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
         {
-            myFunction(JSON.parse(xmlhttp.responseText));
+            install_sidebar(JSON.parse(xmlhttp.responseText));
         }
     }
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
+}
 
-    function myFunction(arr)
+
+function issueCommand(command)
+{
+    var xmlhttp = new XMLHttpRequest();
+    var url = command;
+
+    xmlhttp.onreadystatechange = function()
     {
-        install_sidebar(arr);
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+        {
+            console.log("command issued");
+        }
     }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
 }
 
 function endsWith(str, suffix)
@@ -39,13 +51,14 @@ function install_sidebar(lsObject)
             style : 'border: 1px solid silver',
             routeData : { id: 59, vid: '23.323.4' },
             menu: [
-                { id: 1, text: 'Select Item', icon: 'fa-star' },
-                { id: 2, text: 'View Item', icon: 'fa-camera' },
-                { id: 4, text: 'Delete Item', icon: 'fa-minus' }
+                { id: 3, text: 'Delete', icon: 'fa-minus' }
             ],
             onMenuClick: function( event )
             {
                 console.log(event);
+                var path = event.target.slice(10); // remove "workspace/"
+                issueCommand('rm/' + path);
+                w2ui['sidebar'].remove(event.target);
             },
             onFocus: function( event )
             {

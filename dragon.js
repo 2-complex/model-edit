@@ -14,7 +14,7 @@ function addFile(file, target_path)
         var data = event.target.result;
 
         w2ui['sidebar'].add(target_path, [{
-            id: 'node_' + target_path + '/' + filename,
+            id: target_path + '/' + filename,
             text: filename,
             img: "icon-page"
         }]);
@@ -121,7 +121,10 @@ function initDragon()
             info.highlight.style.border = "0px";
         }
 
-        addFile(e.dataTransfer.files[0], info.path);
+        for(var i = 0; i < e.dataTransfer.files.length; i++)
+        {
+            addFile(e.dataTransfer.files[i], info.path);
+        }
     });
 
 }
