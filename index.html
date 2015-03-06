@@ -49,7 +49,7 @@
     function modelEditMain()
     {
         w2ui['layout'].content('left', document.getElementById("sidebar"));
-        w2ui['layout'].content('main', document.getElementById("modelview"));
+        w2ui['layout'].content('main', document.getElementById("viewcontainer"));
         w2ui['layout'].content('right', document.getElementById("editor"));
         w2ui['layout'].content('preview', document.getElementById("errorview"));
 
@@ -71,7 +71,10 @@
 
 <div id="layout" style="width: 100%; height: 100%;"></div>
 
-<canvas id="modelview"> canvas default text </canvas>
+<div id="viewcontainer">
+    <img id="imageview">
+    <canvas id="modelview"></canvas>
+</div>
 <div id="sidebar"></div>
 <div id="editor"></div>
 <div id="errorview"/></div>

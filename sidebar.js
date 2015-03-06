@@ -75,10 +75,35 @@ function install_sidebar(lsObject)
 
             onClick: function( event )
             {
-                console.log('click', event.target, event);
+                var canvas = document.getElementById("modelview");
+                var img = document.getElementById("imageview");
+
                 if( endsWith(event.target, ".model") )
                 {
+                    w2ui['layout'].show('right');
+                    w2ui['layout'].show('preview');
                     Editor.getTextFile(event.target);
+
+                    canvas.hidden = false;
+                    img.hidden = true;
+                }
+                else
+                {
+                    w2ui['layout'].hide('right');
+                    w2ui['layout'].hide('preview');
+                    var canvas = document.getElementById("modelview");
+                    canvas.hidden = true;
+                    img.hidden = false;
+                    img.src = event.target.slice(10);
+                }
+            },
+
+            onRefresh: function( event )
+            {
+                var nodes = $(".w2ui-node");
+                for( var i = 0; i < nodes.length; i++ )
+                {
+                    nodes[i].draggable = true;
                 }
             }
         });

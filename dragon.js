@@ -75,6 +75,12 @@ function initDragon()
         return null;
     }
 
+    document.addEventListener("dragstart", function(event)
+    {
+        event.dataTransfer.setData("Text", event.target.id);
+        //event.target.style.opacity = "0.4";
+    });
+
     // When the draggable element enters the droptarget, change the DIVS's border style
     document.addEventListener("dragenter", function(event)
     {
@@ -83,7 +89,7 @@ function initDragon()
             var info = getDraggableSidebarInfo(event);
             if( info )
             {
-                info.highlight.style.border = "3px dotted green";
+                info.highlight.style.border = "1px dotted green";
             }
         }
     });
@@ -97,7 +103,7 @@ function initDragon()
         var info = getDraggableSidebarInfo(event);
         if( info )
         {
-            info.highlight.style.border = "3px dotted green";
+            info.highlight.style.border = "1px dotted green";
         }
     });
 
@@ -107,7 +113,7 @@ function initDragon()
         var info = getDraggableSidebarInfo(event);
         if( info )
         {
-            info.highlight.style.border = "0px";
+            info.highlight.style.border = "1px";
         }
     });
 
@@ -118,7 +124,7 @@ function initDragon()
         var info = getDraggableSidebarInfo(event);
         if( info )
         {
-            info.highlight.style.border = "0px";
+            info.highlight.style.border = "1px";
         }
 
         for(var i = 0; i < e.dataTransfer.files.length; i++)
