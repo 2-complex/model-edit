@@ -39,7 +39,6 @@ def get_ls(path):
             "type": "file" }
 
 
-
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_GET(self):
@@ -62,6 +61,24 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             path = self.path[3:]
             print path
             command = 'rm workspace' + path
+            print command
+            os.system(command)
+        elif self.path.startswith("/mv"):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            path = self.path[3:]
+            components = path.split(':')
+            command = 'mv workspace' + components[0] + ' workspace/' + components[1]
+            print command
+            os.system(command)
+        elif self.path.startswith("/mkdir"):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            path = self.path[6:]
+            components = path.split(':')
+            command = 'mkdir -p workspace' + components[0]
             print command
             os.system(command)
         else:

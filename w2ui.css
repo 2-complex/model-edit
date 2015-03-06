@@ -2336,7 +2336,7 @@ button.w2ui-btn-small:focus:before {
   position: relative;
   cursor: default;
   overflow: hidden !important;
-  background-color: #210900 !important;
+  background-color: #100900 !important;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -2387,9 +2387,8 @@ button.w2ui-btn-small:focus:before {
   width: 100%;
 }
 .w2ui-sidebar .w2ui-sidebar-div .w2ui-node {
-  background-color: #210900;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
+  background-color: #100900;
+  border: 1px solid transparent;
   margin: 0px;
   padding: 1px 0px;
 }

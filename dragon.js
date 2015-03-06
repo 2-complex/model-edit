@@ -113,7 +113,7 @@ function initDragon()
         var info = getDraggableSidebarInfo(event);
         if( info )
         {
-            info.highlight.style.border = "1px";
+            info.highlight.style.border = "1px solid transparent";
         }
     });
 
@@ -124,7 +124,7 @@ function initDragon()
         var info = getDraggableSidebarInfo(event);
         if( info )
         {
-            info.highlight.style.border = "1px";
+            info.highlight.style.border = "1px solid transparent";
         }
 
         for(var i = 0; i < e.dataTransfer.files.length; i++)
