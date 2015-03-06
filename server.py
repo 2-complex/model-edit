@@ -20,13 +20,16 @@ ROUTES = (
 )
 
 
+def visible(filename):
+    return not filename.startswith('.')
+
 def get_ls(path):
     if os.path.isdir(path):
         return {
             "id" : path,
             "text" : path.split('/')[-1],
             "img" : "icon-folder",
-            "nodes" : [get_ls(os.path.join(path,x)) for x in os.listdir(path)],
+            "nodes" : [get_ls(os.path.join(path,x)) for x in filter(visible, os.listdir(path))],
             "type": "directory" }
     else:
         return {
