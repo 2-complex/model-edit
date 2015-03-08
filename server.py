@@ -39,6 +39,12 @@ def get_ls(path):
             "type": "file" }
 
 
+def sanitize(path):
+    if path.startswith('/'):
+        path = path[1:]
+    if not path.startswith('workspace'):
+        path = 'workspace/' + path
+
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_GET(self):
@@ -59,17 +65,16 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/plain")
             self.end_headers()
             path = self.path[3:]
-            print path
-            command = 'rm workspace' + path
-            print command
+            path = sanitize(path)
+            command = 'rm ' + path
             os.system(command)
         elif self.path.startswith("/mv"):
             self.send_response(200)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
-            path = self.path[3:]
-            components = path.split(':')
-            command = 'mv workspace' + components[0] + ' workspace/' + components[1]
+            paths = self.path[3:].split(':')
+            paths = map(sanitize, paths)
+            command = 'mv ' + components[0] + ' ' + components[1]
             print command
             os.system(command)
         elif self.path.startswith("/mkdir"):

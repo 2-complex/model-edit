@@ -1,38 +1,5 @@
 
 
-function addFile(file, target_path)
-{
-    var reader = new FileReader();
-
-    reader.readAsDataURL(file);
-
-    reader.onloadend = function(event)
-    {
-        var source = this.result;
-        var img = new Image();
-        var filename = file.name;
-        var data = event.target.result;
-
-        w2ui['sidebar'].add(target_path, [{
-            id: target_path + '/' + filename,
-            text: filename,
-            img: "icon-page"
-        }]);
-
-        img.onload = function()
-        {
-            $.ajax({
-                type: "POST",
-                url: "upload-image",
-                data: {filename: filename, data: data, target_path: target_path},
-                success: function() {console.log("upload image success");},
-                dataType: "text"
-            });
-        }
-        img.src = source; // triggers the load
-    };
-}
-
 if(typeof(String.prototype.trim) === "undefined")
 {
     String.prototype.trim = function()
@@ -75,18 +42,18 @@ function initDragon()
         return null;
     }
 
-    document.addEventListener("dragstart", function(event)
+    document.addEventListener("dragstart", function(e)
     {
-        event.dataTransfer.setData("Text", event.target.id);
-        //event.target.style.opacity = "0.4";
+        e.dataTransfer.setData("Text", e.target.id);
+        //e.target.style.opacity = "0.4";
     });
 
     // When the draggable element enters the droptarget, change the DIVS's border style
-    document.addEventListener("dragenter", function(event)
+    document.addEventListener("dragenter", function(e)
     {
-        if ( event.target.className.contains("w2ui-node") )
+        if ( e.target.className.contains("w2ui-node") )
         {
-            var info = getDraggableSidebarInfo(event);
+            var info = getDraggableSidebarInfo(e);
             if( info )
             {
                 info.highlight.style.border = "1px dotted green";
@@ -96,11 +63,11 @@ function initDragon()
 
     // By default, data/elements cannot be dropped in other elements.
     // To allow a drop, we must prevent the default handling of the element
-    document.addEventListener("dragover", function(event)
+    document.addEventListener("dragover", function(e)
     {
-        event.preventDefault();
+        e.preventDefault();
 
-        var info = getDraggableSidebarInfo(event);
+        var info = getDraggableSidebarInfo(e);
         if( info )
         {
             info.highlight.style.border = "1px dotted green";
@@ -108,9 +75,9 @@ function initDragon()
     });
 
     // When the draggable p element leaves the droptarget, reset the DIVS's border style
-    document.addEventListener("dragleave", function(event)
+    document.addEventListener("dragleave", function(e)
     {
-        var info = getDraggableSidebarInfo(event);
+        var info = getDraggableSidebarInfo(e);
         if( info )
         {
             info.highlight.style.border = "1px solid transparent";
@@ -121,15 +88,25 @@ function initDragon()
     {
         e.preventDefault(); // (Which is to open it)
 
-        var info = getDraggableSidebarInfo(event);
+        var info = getDraggableSidebarInfo(e);
         if( info )
         {
             info.highlight.style.border = "1px solid transparent";
-        }
 
-        for(var i = 0; i < e.dataTransfer.files.length; i++)
-        {
-            addFile(e.dataTransfer.files[i], info.path);
+            var data = e.dataTransfer.getData("Text");
+            if( data )
+            {
+                var comp = data.slice(5).split('/');
+                var filename = comp.slice(comp-1);
+                FileManager.move(data.slice(5), info.path + '/' + filename);
+            }
+            else
+            {
+                for( var i = 0; i < e.dataTransfer.files.length; i++ )
+                {
+                    FileManager.add(e.dataTransfer.files[i], info.path);
+                }
+            }
         }
     });
 

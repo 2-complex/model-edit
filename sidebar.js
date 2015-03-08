@@ -1,41 +1,17 @@
 
-
-function get_ls()
-{
-    var xmlhttp = new XMLHttpRequest();
-    var url = "ls";
-
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
-            install_sidebar(JSON.parse(xmlhttp.responseText));
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-
-function issueCommand(command)
-{
-    var xmlhttp = new XMLHttpRequest();
-    var url = command;
-
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
-            console.log("command issued");
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
 function endsWith(str, suffix)
 {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+
+function replace_filename(oldpath)
+{
+    var newname = document.getElementById('change_file_name_input').value;
+    w2ui['sidebar'].find({id:oldpath})[0].text = newname;
+    w2ui['sidebar'].refresh();
+
+    FileManager.rename(oldpath, newname);
 }
 
 function install_sidebar(lsObject)
@@ -51,23 +27,38 @@ function install_sidebar(lsObject)
             style : 'border: 1px solid silver',
             routeData : { id: 59, vid: '23.323.4' },
             menu: [
+                { id: 1, text: 'Rename', icon: 'fa-minus' },
                 { id: 3, text: 'Delete', icon: 'fa-minus' }
             ],
-            onMenuClick: function( event )
+            onMenuClick: function( e )
             {
-                console.log(event);
-                var path = event.target.slice(10); // remove "workspace/"
-                issueCommand('rm/' + path);
-                w2ui['sidebar'].remove(event.target);
+                var path = e.target;
+
+                if ( e.menuItem.text == "Delete" )
+                {
+                    FileManager.remove(path);
+                }
+                else if ( e.menuItem.text == "Rename" )
+                {
+                    var node = w2ui['sidebar'].find({id:path})[0];
+                    var text = node.text;
+                    node.text = "<input"
+                        + " id=\"change_file_name_input\" value=\"" + text + "\" "
+                        + " onblur=\"replace_filename('" + path + "');\" "
+                        + " onkeydown=\"if (event.keyCode == 13) {replace_filename('" + path + "');}\" "
+                        + " >";
+                    w2ui['sidebar'].refresh();
+                    document.getElementById('change_file_name_input').focus();
+                }
             },
-            onFocus: function( event )
+            onFocus: function( e )
             {
-                console.log('focus: ', this.name, event);
+                console.log('focus: ', this.name, e);
                 // event.preventDefault();
             },
-            onBlur: function( event )
+            onBlur: function( e )
             {
-                console.log('blur: ', this.name, event);
+                console.log('blur: ', this.name, e);
                 // event.preventDefault();
             },
             //onKeydown: function (event) { console.log('keyboard', event); event.preventDefault(); },
@@ -110,4 +101,4 @@ function install_sidebar(lsObject)
     });
 }
 
-get_ls()
+
