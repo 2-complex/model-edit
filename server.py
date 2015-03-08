@@ -28,14 +28,12 @@ def get_ls(path):
         return {
             "id" : path,
             "text" : path.split('/')[-1],
-            "img" : "icon-folder",
             "nodes" : [get_ls(os.path.join(path,x)) for x in filter(visible, os.listdir(path))],
             "type": "directory" }
     else:
         return {
             "id": path,
             "text": path.split('/')[-1],
-            "img": "icon-page",
             "type": "file" }
 
 

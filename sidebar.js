@@ -62,7 +62,7 @@ function install_sidebar(lsObject)
                 // event.preventDefault();
             },
             //onKeydown: function (event) { console.log('keyboard', event); event.preventDefault(); },
-            nodes: lsObject.nodes,
+            nodes: lsObject,
 
             onClick: function( event )
             {

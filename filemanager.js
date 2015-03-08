@@ -54,7 +54,7 @@ FileManager.move = function(source_path, target_path)
         {
             id: target_path,
             text: components.slice(components.length-1),
-            img: "icon-page"
+            icon: "fa fa-file fa-fw",
         }]);
 
     FileManager.issueCommand('mv/' + source_path + ':' + target_path);
@@ -69,6 +69,27 @@ FileManager.rename = function(oldpath, newname)
     FileManager.move(oldpath, dir + '/' + newname);
 }
 
+
+function recursive_style_update(obj)
+{
+    if( obj.type == "directory" )
+    {
+        obj.icon = "fa fa-folder-o fa-fw";
+    }
+    if( obj.type == "file" )
+    {
+        obj.icon = "fa fa-file fa-fw";
+    }
+
+    var nodes = obj.nodes || [];
+    for( var i = 0; i < nodes.length; i++ )
+    {
+        recursive_style_update( nodes[i] );
+    }
+
+    return obj;
+}
+
 FileManager.getCompleteList = function()
 {
     var xmlhttp = new XMLHttpRequest();
@@ -78,7 +99,7 @@ FileManager.getCompleteList = function()
     {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
         {
-            install_sidebar(JSON.parse(xmlhttp.responseText));
+            install_sidebar(recursive_style_update(JSON.parse(xmlhttp.responseText).nodes));
         }
     }
     xmlhttp.open("GET", url, true);
