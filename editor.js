@@ -7,6 +7,12 @@ Editor.presentError = function(message)
     errorDiv.innerHTML = message;
 }
 
+Editor.refreshModel = function(code)
+{
+    Bindings.setString(code);
+    document.getElementById("modelview").style.opacity = 1.0;
+}
+
 Editor.getTextFile = function(path)
 {
     var xmlhttp = new XMLHttpRequest();
@@ -16,16 +22,37 @@ Editor.getTextFile = function(path)
     {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
         {
-            myFunction(xmlhttp.responseText);
+            Editor.aceEditor.getSession().setValue(xmlhttp.responseText);
+            Editor.refreshModel(xmlhttp.responseText);
         }
     }
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
+}
 
-    function myFunction(s)
+var myEditorTimeoutVar = null;
+
+Editor.changedEventTrap = function(e)
+{
+    if( myEditorTimeoutVar )
     {
-        Editor.aceEditor.getSession().setValue(s);
-        Bindings.setString(s);
+        window.clearTimeout(myEditorTimeoutVar);
+    }
+    myEditorTimeoutVar = window.setTimeout(Editor.changed, 200);
+}
+
+Editor.changed = function()
+{
+    var editor = ace.edit("editor");
+    var annotations = editor.getSession().getAnnotations();
+    if( annotations.length == 0 )
+    {
+        document.getElementById("modelview").style.opacity = 1.0;
+        Editor.refreshModel(editor.getSession().getValue());
+    }
+    else
+    {
+        document.getElementById("modelview").style.opacity = 0.5;
     }
 }
 
@@ -37,5 +64,7 @@ Editor.initEditor = function()
     Editor.aceEditor = editor;
 
     Editor.getTextFile('workspace/box.model');
+
+    editor.getSession().on("changeAnnotation", Editor.changedEventTrap);
 }
 

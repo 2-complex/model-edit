@@ -9,6 +9,7 @@ var MouseController = function(canvas, program)
     canvas.onmouseup = this.onMouseUp.bind(this);
     canvas.onmousemove = this.onMouseMove.bind(this);
     canvas.onmouseleave = this.onMouseLeave.bind(this);
+    $("#modelview").on("scrollwheel", function(e) {alert('asdf');}); // Doesn't work???
 }
 
 MouseController.prototype.getLocalCoord = function(theEvent)
@@ -45,6 +46,10 @@ MouseController.prototype.onMouseLeave = function(theEvent)
     this.isMouseDown = false;
 }
 
+MouseController.prototype.onMouseWheel = function(theEvent)
+{
+    console.log("scroll");
+}
 
 var Bindings = function Bindings() {}
 
