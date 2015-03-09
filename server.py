@@ -1,6 +1,7 @@
 import os
 import posixpath
 import urllib
+import urllib2
 
 import SimpleHTTPServer
 import SocketServer
@@ -38,54 +39,67 @@ def get_ls(path):
 
 
 def sanitize(path):
+    path = urllib2.unquote(path)
     if path.startswith('/'):
         path = path[1:]
     if not path.startswith('workspace'):
         path = 'workspace/' + path
 
+    components = path.split('/')
+    for c in components:
+        if c.startswith('.'):
+            raise Exception("invalid path")
+
+    return '"' + path + '"'
+
+def execute_command(command):
+    print "executing: " + command
+    os.system(command)
+
 class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_GET(self):
-        if self.path.endswith(".model"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            f = open('.'+self.path, 'r')
-            self.wfile.write(f.read().encode("UTF-8"))
-            f.close()
-        elif self.path.startswith("/ls"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            self.wfile.write(json.dumps({"nodes":get_ls('workspace')}).encode("UTF-8"))
-        elif self.path.startswith("/rm"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            path = self.path[3:]
-            path = sanitize(path)
-            command = 'rm ' + path
-            os.system(command)
-        elif self.path.startswith("/mv"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            paths = self.path[3:].split(':')
-            paths = map(sanitize, paths)
-            command = 'mv ' + components[0] + ' ' + components[1]
-            print command
-            os.system(command)
-        elif self.path.startswith("/mkdir"):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            path = self.path[6:]
-            components = path.split(':')
-            command = 'mkdir -p workspace' + components[0]
-            print command
-            os.system(command)
-        else:
-            return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+        try:
+            if self.path.endswith(".model"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                f = open('.'+self.path, 'r')
+                self.wfile.write(f.read().encode("UTF-8"))
+                f.close()
+            elif self.path.startswith("/ls"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                self.wfile.write(json.dumps({"nodes":get_ls('workspace')}).encode("UTF-8"))
+            elif self.path.startswith("/rm"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                path = self.path[3:]
+                path = sanitize(path)
+                command = 'rm ' + path
+                execute_command(command)
+            elif self.path.startswith("/mv"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                paths = self.path[3:].split(':')
+                paths = map(sanitize, paths)
+                command = 'mv ' + paths[0] + ' ' + paths[1]
+                execute_command(command)
+            elif self.path.startswith("/mkdir"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                path = self.path[6:]
+                components = path.split(':')
+                command = 'mkdir -p workspace' + components[0]
+                execute_command(command)
+            else:
+                return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+        except:
+            self.send_response(403)
 
 
     def do_POST(self):

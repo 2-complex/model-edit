@@ -14,6 +14,15 @@ function replace_filename(oldpath)
     FileManager.rename(oldpath, newname);
 }
 
+function newEditNodeHtml(text, path)
+{
+    return "<input"
+        + " id=\"change_file_name_input\" value=\"" + text + "\" "
+        + " onblur=\"replace_filename('" + path + "');\" "
+        + " onkeydown=\"if (event.keyCode == 13) {replace_filename('" + path + "');}\" "
+        + " >";
+}
+
 function install_sidebar(lsObject)
 {
     $(function ()
@@ -21,14 +30,12 @@ function install_sidebar(lsObject)
         $('#sidebar').w2sidebar(
         {
             name : 'sidebar',
-            img : null,
-            topHTML : '<div style="padding: 10px 5px; border-bottom: 1px solid #aaa;"></div>',
-            bottomHTML : '<div style="padding: 10px 5px; border-top: 1px solid #aaa;"></div>',
             style : 'border: 1px solid silver',
             routeData : { id: 59, vid: '23.323.4' },
             menu: [
-                { id: 1, text: 'Rename', icon: 'fa-minus' },
-                { id: 3, text: 'Delete', icon: 'fa-minus' }
+                { id: 1, text: 'Rename', icon: 'fa fa-pencil fa-fw' },
+                { id: 2, text: 'New Folder', icon: 'fa fa-plus fa-fw' },
+                { id: 3, text: 'Delete', icon: 'fa-li fa fa-minus-square' }
             ],
             onMenuClick: function( e )
             {
@@ -42,11 +49,17 @@ function install_sidebar(lsObject)
                 {
                     var node = w2ui['sidebar'].find({id:path})[0];
                     var text = node.text;
-                    node.text = "<input"
-                        + " id=\"change_file_name_input\" value=\"" + text + "\" "
-                        + " onblur=\"replace_filename('" + path + "');\" "
-                        + " onkeydown=\"if (event.keyCode == 13) {replace_filename('" + path + "');}\" "
-                        + " >";
+                    node.text = newEditNodeHtml(text, path);
+                    w2ui['sidebar'].refresh();
+                    document.getElementById('change_file_name_input').focus();
+                }
+                else if ( e.menuItem.text == "New Folder" )
+                {
+                    var node = w2ui['sidebar'].add("workspace",
+                        { id: "workspace/newfolder", text: "newfolder", type: "directory", icon: "fa fa-folder-o fa-fw" } );
+
+                    node.text = newEditNodeHtml("newfolder", "workspace/newfolder");
+
                     w2ui['sidebar'].refresh();
                     document.getElementById('change_file_name_input').focus();
                 }

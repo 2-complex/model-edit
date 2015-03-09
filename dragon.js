@@ -97,7 +97,7 @@ function initDragon()
             if( data )
             {
                 var comp = data.slice(5).split('/');
-                var filename = comp.slice(comp-1);
+                var filename = comp.slice(comp.length-1)[0];
                 FileManager.move(data.slice(5), info.path + '/' + filename);
             }
             else
