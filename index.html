@@ -39,10 +39,7 @@
     <title>Model Editor</title>
     <style type="text/css" media="screen">
         body { overflow: hidden; background: #112}
-        #sidebar   { left: 0; top: 0; width:100%; height:100%; }
-        #modelview { left: 0; top: 0; width:100%; height:100%; }
-        #errorview { left: 0; top: 0; width:100%; height:100%; }
-        #editor    { left: 0; top: 0; width:100%; height:100%; }
+        .fill { left: 0; top: 0; width:100%; height:100%; }
     </style>
 
     <script type="text/javascript" src="main.js"></script>
@@ -70,7 +67,7 @@
             console.log("keydown");
         }
 
-        $("#editorcontainer").on("keydown", keyDown);
+        $(canvas).on("keydown", keyDown);
     }
     </script>
 
@@ -82,17 +79,17 @@
 
 <div id="layout" style="width: 100%; height: 100%;"></div>
 
-<div id="viewcontainer" style="background-color:#555588">
+<div id="viewcontainer" style="background-color:#555588" class = "fill">
     <img id="imageview">
-    <canvas id="modelview"></canvas>
+    <canvas id="modelview" class = "fill"></canvas>
 </div>
-<div id="sidebar"></div>
+<div id="sidebar" class = "fill"></div>
 
-<div id="editorcontainer" style="background-color:#555588">
-    <div id="editor"></div>
+<div id="editorcontainer" style="background-color:#555588" class="fill">
+    <div id="editor"  class="fill"></div>
 </div>
 
-<div id="errorview"/></div>
+<div id="errorview" class = "fill"></div>
 
 </body>
 </html>
