@@ -91,7 +91,10 @@ function install_sidebar(lsObject)
                     canvas.hidden = false;
                     img.hidden = true;
                 }
-                else
+                else if (
+                    endsWith(event.target, ".jpg") ||
+                    endsWith(event.target, ".jpeg") ||
+                    endsWith(event.target, ".png") )
                 {
                     w2ui['layout'].hide('right');
                     w2ui['layout'].hide('preview');
