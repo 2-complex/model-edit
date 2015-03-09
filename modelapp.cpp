@@ -86,6 +86,11 @@ void ModelApp::mouseUp(const Vec2& C)
     mouseDragged(C);
 }
 
+void ModelApp::mouseWheel(double delta)
+{
+    cameraRadius *= exp(-delta / 200.0);
+}
+
 void ModelApp::setBank(Bank* inBank)
 {
     bank = inBank;

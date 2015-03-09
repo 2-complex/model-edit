@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="w2ui/libs/font-awesome/font-awesome.css" />
     <script type="text/javascript" src="w2ui/libs/jquery/jquery-2.1.0.min.js"></script>
+    <script type='text/javascript' src='jquery.mousewheel.js'></script>
     <script type="text/javascript" src="w2ui/src/w2utils.js"></script>
     <script type="text/javascript" src="w2ui/src/w2sidebar.js"></script>
     <script type="text/javascript" src="w2ui/src/w2layout.js"></script>
@@ -63,6 +64,13 @@
         Editor.initEditor();
         initDragon();
         FileManager.getCompleteList();
+
+        function keyDown(e)
+        {
+            console.log("keydown");
+        }
+
+        $("#editorcontainer").on("keydown", keyDown);
     }
     </script>
 
@@ -79,9 +87,12 @@
     <canvas id="modelview"></canvas>
 </div>
 <div id="sidebar"></div>
-<div id="editor"></div>
-<div id="errorview"/></div>
 
+<div id="editorcontainer" style="background-color:#555588">
+    <div id="editor"></div>
+</div>
+
+<div id="errorview"/></div>
 
 </body>
 </html>

@@ -53,6 +53,11 @@ extern "C" void mouseUp(double x, double y)
     ModelApp::get()->mouseUp(Vec2(x,y));
 }
 
+extern "C" void mouseWheel(double delta)
+{
+    ModelApp::get()->mouseWheel(delta);
+}
+
 extern "C" void init()
 {
     ModelApp::get()->setBank(new EmscriptenBank);

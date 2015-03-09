@@ -25,6 +25,8 @@ public:
     void mouseDragged(const Vec2& C);
     void mouseUp(const Vec2& C);
 
+    void mouseWheel(double delta);
+
     void setString(const char* inString);
 
     static ModelApp* get();

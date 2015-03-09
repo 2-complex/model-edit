@@ -5,11 +5,11 @@ var MouseController = function(canvas, program)
     this.canvas = canvas;
     this.isMouseDown = false;
 
+    $(canvas).mousewheel(this.onMouseWheel.bind(this));
     canvas.onmousedown = this.onMouseDown.bind(this);
     canvas.onmouseup = this.onMouseUp.bind(this);
     canvas.onmousemove = this.onMouseMove.bind(this);
     canvas.onmouseleave = this.onMouseLeave.bind(this);
-    $("#modelview").on("scrollwheel", function(e) {alert('asdf');}); // Doesn't work???
 }
 
 MouseController.prototype.getLocalCoord = function(theEvent)
@@ -48,7 +48,7 @@ MouseController.prototype.onMouseLeave = function(theEvent)
 
 MouseController.prototype.onMouseWheel = function(theEvent)
 {
-    console.log("scroll");
+    Bindings.mouseWheel(theEvent.deltaY);
 }
 
 var Bindings = function Bindings() {}
@@ -63,6 +63,8 @@ function initBindings()
     Bindings.mouseDown = Module.cwrap("mouseDown", "", ["number", "number"]);
     Bindings.mouseDragged = Module.cwrap("mouseDragged", "", ["number", "number"]);
     Bindings.mouseUp = Module.cwrap("mouseUp", "", ["number", "number"]);
+
+    Bindings.mouseWheel = Module.cwrap("mouseWheel", "", ["number"]);
 
     Bindings.setString = Module.cwrap("setString", "", ["string"]);
 }

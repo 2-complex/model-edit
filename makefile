@@ -8,7 +8,8 @@ EXPORTS := "[ \
 	'_setString', \
 	'_init', '_resize', \
 	'_step', '_draw', \
-	'_mouseDown', '_mouseDragged', '_mouseUp']"
+	'_mouseDown', '_mouseDragged', '_mouseUp', \
+	'_mouseWheel']"
 
 INCLUDES := \
 	-I$(G2C) \
