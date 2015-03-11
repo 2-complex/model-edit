@@ -4,23 +4,47 @@ function endsWith(str, suffix)
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
+var fileReplacerCounter = 0;
+
+function adjust_children(oldpath, newpath)
+{
+    console.log(oldpath + " " + newpath);
+    var node = w2ui['sidebar'].find({id:oldpath})[0];
+
+    var components = newpath.split('/');
+    var newname = components.slice(components.length-1).join('');
+
+    var nodes = node.nodes || [];
+    for( var i = 0; i < nodes.length; i++ )
+    {
+        adjust_children(
+            oldpath + '/' + nodes[i].text,
+            newpath + '/' + nodes[i].text );
+    }
+
+    node.id = newpath;
+    node.text = newname;
+}
 
 function replace_filename(oldpath)
 {
-    var newname = document.getElementById('change_file_name_input').value;
-    var components = oldpath.split('/');
-    var parent = components.slice(0, components.length-1).join('/');
-    w2ui['sidebar'].set(oldpath, {id: parent + '/' + newname, text : newname});
+    if( fileReplacerCounter )
+    {
+        fileReplacerCounter = 0;
 
-    FileManager.rename(oldpath, newname);
-}
+        var newname = document.getElementById('change_file_name_input').value;
+        var components = oldpath.split('/');
+        var parent = components.slice(0, components.length-1).join('/');
+        var node = w2ui['sidebar'].find({id:oldpath})[0];
+        var nodes = node.nodes;
+        var newpath = parent + '/' + newname;
 
-function make_new_folder(oldpath)
-{
-    var newname = document.getElementById('change_file_name_input').value;
-    w2ui['sidebar'].set(oldpath, {text : newname});
+        adjust_children(oldpath, newpath)
 
-    // FileManager.mkdir(oldpath, newname);
+        w2ui['sidebar'].refresh();
+
+        FileManager.rename(oldpath, newname);
+    }
 }
 
 function newEditNodeHtml(text, path, function_name)
@@ -31,7 +55,10 @@ function newEditNodeHtml(text, path, function_name)
         + " onkeydown=\"if (event.keyCode == 13) {" + function_name + "('" + path + "');}\" "
         + " >";
 
-    w2ui['sidebar'].set(path, {text : replacer_text});
+    var nodes = w2ui['sidebar'].find({id:path})[0].nodes;
+    w2ui['sidebar'].set(path, {text : replacer_text, nodes : nodes});
+
+    fileReplacerCounter = 1;
 }
 
 function install_sidebar(lsObject)
@@ -69,7 +96,9 @@ function install_sidebar(lsObject)
                     var node = w2ui['sidebar'].add("workspace",
                         { id: "workspace/newfolder", text: "newfolder", type: "directory", icon: "fa fa-folder-o fa-fw" } );
 
-                    newEditNodeHtml("newfolder", "workspace/newfolder", "make_new_folder");
+                    FileManager.mkdir("workspace/newfolder");
+
+                    newEditNodeHtml("newfolder", "workspace/newfolder", "replace_filename");
                     document.getElementById('change_file_name_input').focus();
                 }
             },

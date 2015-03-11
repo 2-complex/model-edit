@@ -42,20 +42,29 @@ FileManager.remove = function(path)
     FileManager.issueCommand('rm/' + path);
 }
 
+FileManager.mkdir = function(path)
+{
+    FileManager.issueCommand('mkdir/' + path);
+}
 
 FileManager.move = function(source_path, target_path)
 {
     var components = target_path.split('/');
     var parent_path = components.slice(0, components.length-1).join('/');
 
+    var node = w2ui['sidebar'].find({id:source_path})[0];
+    var type = node.type;
+    var icon = node.icon;
+
     w2ui['sidebar'].remove(source_path);
 
     w2ui['sidebar'].add(parent_path, [
-        {
-            id: target_path,
-            text: components.slice(components.length-1),
-            icon: "fa fa-file fa-fw",
-        }]);
+    {
+        id: target_path,
+        text: components.slice(components.length-1),
+        type: type,
+        icon: icon,
+    }]);
 
     FileManager.issueCommand('mv/' + source_path + ':' + target_path);
 }
@@ -66,7 +75,10 @@ FileManager.rename = function(oldpath, newname)
     var components = oldpath.split('/');
     var dir = components.slice(0, components.length - 1).join('/');
 
-    FileManager.move(oldpath, dir + '/' + newname);
+    var source_path = oldpath
+    var target_path = dir + '/' + newname;
+
+    FileManager.issueCommand('mv/' + source_path + ':' + target_path);
 }
 
 

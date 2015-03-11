@@ -78,7 +78,7 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.end_headers()
                 path = self.path[3:]
                 path = sanitize(path)
-                command = 'rm ' + path
+                command = 'rm -rf ' + path #!!!!!!!!!!!!!!
                 execute_command(command)
             elif self.path.startswith("/mv"):
                 self.send_response(200)
@@ -93,8 +93,9 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.send_header("Content-type", "text/plain")
                 self.end_headers()
                 path = self.path[6:]
-                components = path.split(':')
-                command = 'mkdir -p workspace' + components[0]
+                paths = path.split(':')
+                paths = map(sanitize, paths)
+                command = 'mkdir -p ' + paths[0]
                 execute_command(command)
             else:
                 return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
