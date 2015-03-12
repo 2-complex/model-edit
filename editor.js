@@ -13,10 +13,15 @@ Editor.refreshModel = function(code)
     document.getElementById("modelview").style.opacity = 1.0;
 }
 
-Editor.getTextFile = function(path)
+Editor.getTextFile = function(path, mode)
 {
     var xmlhttp = new XMLHttpRequest();
     var url = path;
+
+    if( mode )
+    {
+        Editor.aceEditor.getSession().setMode(mode);
+    }
 
     xmlhttp.onreadystatechange = function()
     {

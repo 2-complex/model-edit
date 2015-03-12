@@ -175,11 +175,24 @@ function install_sidebar(lsObject)
                 var canvas = document.getElementById("modelview");
                 var img = document.getElementById("imageview");
 
-                if( endsWith(event.target, ".model") )
+                if( endsWith(event.target, ".model") ||
+                    endsWith(event.target, ".mesh") )
                 {
                     w2ui['layout'].show('right');
                     w2ui['layout'].show('preview');
-                    Editor.getTextFile(event.target);
+                    w2ui['layout'].show('main');
+                    Editor.getTextFile(event.target, "ace/mode/json");
+
+                    canvas.hidden = false;
+                    img.hidden = true;
+                }
+                if( endsWith(event.target, ".cpp") ||
+                    endsWith(event.target, ".h") )
+                {
+                    w2ui['layout'].show('right');
+                    w2ui['layout'].hide('preview');
+                    w2ui['layout'].hide('main');
+                    Editor.getTextFile(event.target, "ace/mode/c_cpp");
 
                     canvas.hidden = false;
                     img.hidden = true;
@@ -191,10 +204,11 @@ function install_sidebar(lsObject)
                 {
                     w2ui['layout'].hide('right');
                     w2ui['layout'].hide('preview');
+                    w2ui['layout'].show('main');
                     var canvas = document.getElementById("modelview");
                     canvas.hidden = true;
                     img.hidden = false;
-                    img.src = event.target.slice(10);
+                    img.src = event.target;
                 }
             },
 
