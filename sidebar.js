@@ -104,13 +104,9 @@ function install_sidebar(lsObject)
             },
             onFocus: function( e )
             {
-                console.log('focus: ', this.name, e);
-                // event.preventDefault();
             },
             onBlur: function( e )
             {
-                console.log('blur: ', this.name, e);
-                // event.preventDefault();
             },
             //onKeydown: function (event) { console.log('keyboard', event); event.preventDefault(); },
             nodes: lsObject,

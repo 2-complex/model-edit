@@ -55,6 +55,7 @@ FileManager.move = function(source_path, target_path)
     var node = w2ui['sidebar'].find({id:source_path})[0];
     var type = node.type;
     var icon = node.icon;
+    var nodes = node.nodes;
 
     w2ui['sidebar'].remove(source_path);
 
@@ -64,6 +65,7 @@ FileManager.move = function(source_path, target_path)
         text: components.slice(components.length-1),
         type: type,
         icon: icon,
+        nodes: nodes
     }]);
 
     FileManager.issueCommand('mv/' + source_path + ':' + target_path);

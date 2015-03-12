@@ -78,7 +78,7 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.end_headers()
                 path = self.path[3:]
                 path = sanitize(path)
-                command = 'rm -rf ' + path #!!!!!!!!!!!!!!
+                command = 'rm -rf ' + path # yikes !!!!!!!!!!!!!!
                 execute_command(command)
             elif self.path.startswith("/mv"):
                 self.send_response(200)
