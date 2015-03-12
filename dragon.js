@@ -18,7 +18,6 @@ if(typeof(String.prototype.contains) === "undefined")
 
 function initDragon()
 {
-
     function getDraggableSidebarInfo(e)
     {
         if( e.target.className.contains("w2ui-node") )

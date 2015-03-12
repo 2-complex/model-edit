@@ -61,14 +61,73 @@ function newEditNodeHtml(text, path, function_name)
     fileReplacerCounter = 1;
 }
 
+function popup()
+{
+    $(function () {
+        $().w2form({
+            name: 'git-init-form',
+
+            fields: [
+                { type: 'text', required: true, name: 'Url' },
+                { type: 'text', required: true, name: 'Branch' },
+                { type: 'text', required: true, name: 'Token' } ],
+
+            actions:
+            {
+                Sync: function (target, data)
+                {
+                    console.log('sync', this.fields, target, data);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "git-init",
+                        data: {
+                            git_url: this.get('Url').el.value,
+                            git_branch: this.get('Branch').el.value,
+                            git_token: this.get('Token').el.value },
+                        success: function()
+                        {
+                            FileManager.getCompleteList();
+                        },
+                        dataType: "text"
+                    });
+
+
+                    this.get('Branch').el.value
+                    this.get('Token').el.value
+                }
+            }
+        });
+    })
+
+    w2popup.open({
+        title   : 'Sync to git',
+        width   : 700,
+        height  : 500,
+        showMax : true,
+        body    : '<div id="form" style="position: absolute; left: 10px; right: 10px; bottom: 10px; height: 100%;"></div>',
+        onOpen  : function (event) {
+            event.onComplete = function () {
+                $('#w2ui-popup #form').w2render('git-init-form');
+            }
+        }
+    })
+}
+
 function install_sidebar(lsObject)
 {
     $(function ()
     {
+        if( w2ui['sidebar'] )
+            w2ui['sidebar'].destroy();
+
         $('#sidebar').w2sidebar(
         {
             name : 'sidebar',
             style : 'border: 1px solid silver',
+
+            topHTML : '<button style="padding: 10px 5px; border-bottom: 1px solid #aaa;" onclick="popup()">Sync to git repo</button>',
+
             routeData : { id: 59, vid: '23.323.4' },
             menu: [
                 { text: 'Rename', icon: 'fa fa-pencil fa-fw' },

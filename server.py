@@ -104,20 +104,44 @@ class BossHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
     def do_POST(self):
-        length = int(self.headers.getheader('content-length'))
-        qmap = urlparse.parse_qs(self.rfile.read(length))
-        data = base64.b64decode(re.findall("base64,(.*)",
-                qmap['data'][0])[0])
+        if self.path.startswith("/upload"):
+            length = int(self.headers.getheader('content-length'))
+            qmap = urlparse.parse_qs(self.rfile.read(length))
+            data = base64.b64decode(re.findall("base64,(.*)",
+                    qmap['data'][0])[0])
 
-        filename = qmap['filename'][0]
-        target_path = qmap['target_path'][0]
+            filename = qmap['filename'][0]
+            target_path = qmap['target_path'][0]
 
-        if os.path.isdir(target_path):
-            f = open(os.path.join(target_path, filename), 'w')
-            f.write(data)
-            f.close()
+            if os.path.isdir(target_path):
+                f = open(os.path.join(target_path, filename), 'w')
+                f.write(data)
+                f.close()
 
-        self.send_response(200)
+            self.send_response(200)
+
+        elif self.path.startswith("/git-init"):
+            length = int(self.headers.getheader('content-length'))
+            qmap = urlparse.parse_qs(self.rfile.read(length))
+
+            git_url = qmap['git_url'][0]
+            git_branch = qmap['git_branch'][0]
+            git_token = qmap['git_token'][0]
+
+            execute_command("rm -rf workspace")
+            execute_command("mkdir workspace")
+            os.chdir("workspace")
+            execute_command("git init")
+            execute_command("git remote add origin " + git_url.replace("://", "://" + git_token + "@"))
+            execute_command("git pull origin master")
+            os.chdir("..")
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write('{"status":"success"}')
+
+            self.send_response(200)
 
 
     def translate_path(self, path):

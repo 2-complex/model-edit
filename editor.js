@@ -63,8 +63,6 @@ Editor.initEditor = function()
     editor.getSession().setMode("ace/mode/json");
     Editor.aceEditor = editor;
 
-    Editor.getTextFile('workspace/box.model');
-
     editor.getSession().on("changeAnnotation", Editor.changedEventTrap);
 }
 
