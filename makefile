@@ -19,7 +19,6 @@ SOURCE := \
 	$(G2C)/app.cpp \
 	$(G2C)/util.cpp \
 	$(G2C)/listener.cpp \
-	$(G2C)/app.cpp \
 	$(G2C)/parse.cpp \
 	$(G2C)/serializable.cpp \
 	$(G2C)/sound.cpp \
